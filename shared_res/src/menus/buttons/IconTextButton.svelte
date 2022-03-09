@@ -1,5 +1,4 @@
 <script>
-    import { fade } from "svelte/transition";
     import { createEventDispatcher } from "svelte";
 
     export let text;
@@ -19,7 +18,7 @@
     <div class="text">{text}</div>
 </div>
 
-<style>
+<style lang="scss">
     .button {
         display: grid;
         grid-template-columns: max-content auto max-content;
@@ -33,10 +32,10 @@
         will-change: background-position;
         transition: background-position .2s ease-out;
         margin: 0 10px;
-    }
 
-    .button:hover {
-        background-position: left bottom;
+        &:hover {
+            background-position: left bottom;
+        }
     }
 
     .icon {

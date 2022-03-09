@@ -1,13 +1,13 @@
 <script>
     import Account from "./elements/Account.svelte";
-    import Logo from "./elements/Logo.svelte";
-    import ChildButton from "./elements/main-buttons/ChildButton.svelte";
-    import MainButton from "./elements/main-buttons/MainButton.svelte";
-    import MainButtons from "./elements/main-buttons/MainButtons.svelte";
-    import IconButton from "./elements/secondary-buttons/IconButton.svelte";
-    import IconTextButton from "./elements/secondary-buttons/IconTextButton.svelte";
-    import SecondaryButtonsLeft from "./elements/secondary-buttons/SecondaryButtonsLeft.svelte";
-    import SecondaryButtonsRight from "./elements/secondary-buttons/SecondaryButtonsRight.svelte";
+    import Logo from "../../shared_res/src/menus/Logo.svelte";
+    import ChildButton from "../../shared_res/src/menus/buttons/ChildButton.svelte";
+    import MainButton from "./elements/buttons/MainButton.svelte";
+    import MainButtons from "./elements/buttons/MainButtons.svelte";
+    import IconButton from "../../shared_res/src/menus/buttons/IconButton.svelte";
+    import IconTextButton from "../../shared_res/src/menus/buttons/IconTextButton.svelte";
+    import ButtonWrapperLeft from "../../shared_res/src/menus/buttons/ButtonWrapperLeft.svelte";
+    import ButtonWrapperRight from "../../shared_res/src/menus/buttons/ButtonWrapperRight.svelte";
 
     function openProxyManager() {
         ui.open("proxymanager", screen);
@@ -60,13 +60,16 @@
     function browseWebsite() {
         utils.browse("https://liquidbounce.net");
     }
+
+    const username = client.getSessionService().getUsername();
+    const faceUrl = client.getSessionService().getFaceUrl();
 </script>
 
 <main>
     <div class="scale">
         <div class="wrapper">
             <Logo />
-            <Account username="heafie" location="de" lastUsed="2021-05-07" on:proxyManagerClick={openProxyManager} on:altManagerClick={openAltManager} />
+            <Account username={username} location="de" faceUrl={faceUrl} lastUsed="2021-05-07" on:proxyManagerClick={openProxyManager} on:altManagerClick={openAltManager} />
             <MainButtons>
                 <MainButton text="Singleplayer" icon="singleplayer" on:click={openSingleplayer} />
                 <MainButton text="Multiplayer" icon="multiplayer" on:click={openMultiplayer} let:hovered>
@@ -76,20 +79,20 @@
                 <MainButton text="Options" icon="options" on:click={openOptions} />
             </MainButtons>
 
-            <SecondaryButtonsLeft>
+            <ButtonWrapperLeft>
                 <IconTextButton text="Change Background" icon="change-background" />
                 <IconTextButton text="Exit" icon="exit" on:click={scheduleStop} />
-            </SecondaryButtonsLeft>
+            </ButtonWrapperLeft>
 
 
-            <SecondaryButtonsRight>
+            <ButtonWrapperRight>
                 <IconButton text="Forum" icon="nodebb" on:click={browseForum} />
                 <IconButton text="GitHub" icon="github" on:click={browseGitHub} />
                 <IconButton text="Guilded" icon="guilded" on:click={browseGuilded} />
                 <IconButton text="Twitter" icon="twitter" on:click={browseTwitter} />
                 <IconButton text="YouTube" icon="youtube" on:click={browseYouTube} />
                 <IconTextButton text="liquidbounce.net" icon="liquidbounce.net" on:click={browseWebsite} />
-            </SecondaryButtonsRight>
+            </ButtonWrapperRight>
         </div>
     </div>
 </main>

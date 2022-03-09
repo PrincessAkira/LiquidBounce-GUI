@@ -1,12 +1,13 @@
 <script>
-    import {sineInOut} from "svelte/easing";
-    import {slide} from "svelte/transition";
+    import { sineInOut } from "svelte/easing";
+    import { slide } from "svelte/transition";
     import Module from "./Module.svelte";
 
     export let category;
     export let modules;
 
-    let expanded = localStorage.getItem(`clickgui.panel.${category}.expanded`) === "true" || localStorage.getItem(`clickgui.panel.${category}.expanded`) === null;
+    let expanded = localStorage.getItem(`clickgui.panel.${category}.expanded`) === "true" 
+        || localStorage.getItem(`clickgui.panel.${category}.expanded`) === null;
 
     let renderedModules = modules;
 
@@ -36,7 +37,7 @@
         localStorage.setItem(`clickgui.panel.${category}.left`, left);
 	}
 
-    function toggleExpanded() {
+    function toggleExpanded(e) {
         if (expanded) {
             expanded = false;
             renderedModules = [];
@@ -51,7 +52,8 @@
     window.addEventListener("mousemove", onMouseMove);
 
     function handleToggleModule(event) {
-        modules.find(m => m.name === event.getModule().getName()).enabled = event.getNewState();
+        const targetModule = event.getModule().getName();
+        modules.find(m => m.name === targetModule).enabled = event.getNewState();
         if (expanded) {
             renderedModules = modules;
         }
@@ -70,29 +72,26 @@
     }
 </script>
 
-<div on:mousedown={handleToggleClick} class="panel" style="left: {left}px; top: {top}px;">
-    <div on:mousedown={onMouseDown} class="title-wrapper">
+<div class="panel" style="left: {left}px; top: {top}px;">
+    <div on:mousedown={handleToggleClick} on:mousedown={onMouseDown} class="title-wrapper">
         <img class="icon" src="img/{category.toLowerCase()}.svg" alt="icon" />
         <div class="title">{category}</div>
-        <div on:click={toggleExpanded} class="visibility-toggle" class:expanded={expanded}>
-
-        </div>
+        <div on:click={toggleExpanded} class="visibility-toggle" class:expanded={expanded}></div>
     </div>
     <div class="modules">
         {#each renderedModules as m}
-            <div transition:slide|local={{duration: 200, easing: sineInOut}}>
-                <Module name={m.name} enabled={m.enabled} setEnabled={m.setEnabled} />
+            <div transition:slide={{duration: 400, easing: sineInOut}}>
+                <Module instance={m.instance} enabled={m.enabled} />
             </div>
         {/each}
     </div>
 </div>
 
-<style>
+<style lang="scss">
     .panel {
         border-radius: 5px;
         overflow: hidden;
         width: 225px;
-        border: solid 1px rgba(0, 0, 0, 0.68);
         position: absolute;
     }
 
@@ -122,38 +121,40 @@
         height: 12px;
         width: 12px;
         position: relative;
-    }
 
-    .visibility-toggle::before,
-    .visibility-toggle::after {
-        content: "";
-        position: absolute;
-        background-color: white;
-        transition: transform 0.25s ease-out;
-    }
+        &::before {
+            content: "";
+            position: absolute;
+            background-color: white;
+            transition: transform 0.4s ease-out;
+            top: 0;
+            left: 50%;
+            width: 2px;
+            height: 100%;
+            margin-left: -1px;
+        }
 
-    .visibility-toggle::before {
-        top: 0;
-        left: 50%;
-        width: 2px;
-        height: 100%;
-        margin-left: -1px;
-    }
+        &::after {
+            content: "";
+            position: absolute;
+            background-color: white;
+            transition: transform 0.4s ease-out; 
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            margin-top: -1px; 
+        }
 
-    .visibility-toggle::after {
-        top: 50%;
-        left: 0;
-        width: 100%;
-        height: 2px;
-        margin-top: -1px;
-    }
+        &.expanded {
+            &::before {
+                transform: rotate(90deg);
+            }
 
-    .visibility-toggle.expanded::before {
-        transform: rotate(90deg);
-    }
-
-    .visibility-toggle.expanded::after {
-        transform: rotate(180deg);
+            &::after {
+                transform: rotate(180deg);
+            }
+        }
     }
 
     ::-webkit-scrollbar {
